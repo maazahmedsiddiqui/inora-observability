@@ -2,6 +2,10 @@ from flask import Flask
 from prometheus_client import Counter, Gauge, Histogram, Summary, generate_latest
 import random
 import time
+import logging
+
+logging.basicConfig(filename='app.log', level=logging.INFO, 
+                    format='%(asctime)s - %(levelname)s - %(message)s')
 
 app = Flask(__name__)
 
@@ -21,6 +25,7 @@ def metrics():
 def catalog():
     time.sleep(random.uniform(0.1, 0.3))
     REQUEST_COUNT.labels('GET', '/catalog', '200').inc()
+    logging.info("Catalog endpoint accessed by user")
     return {"items": ["clover pendant", "minimalist ring", "pearl bracelet"]}
 
 @app.route('/order', methods=['POST'])
@@ -30,13 +35,17 @@ def order():
     if random.random() < 0.2:
         REQUEST_COUNT.labels('POST', '/order', '500').inc()
         BUSINESS_ORDERS.labels('failed').inc()
+        logging.error("Payment transaction failed for order attempt")
         return {"error": "payment_failed"}, 500
     
     time.sleep(random.uniform(0.2, 0.6))
     REQUEST_COUNT.labels('POST', '/order', '200').inc()
     BUSINESS_ORDERS.labels('success').inc()
     ORDER_PROCESSING.observe(time.time() - start_time)
-    return {"status": "success", "order_id": random.randint(1000, 9999)}
+    
+    order_id = random.randint(1000, 9999)
+    logging.info(f"Order {order_id} processed successfully")
+    return {"status": "success", "order_id": order_id}
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
