@@ -4,8 +4,9 @@ import random
 
 while True:
     requests.get('http://127.0.0.1:5000/catalog')
+    requests.post('http://127.0.0.1:5000/order')
     
-    if random.random() < 0.3:
-        requests.post('http://127.0.0.1:5000/order')
+    if random.random() < 0.1:
+        requests.post('http://127.0.0.1:5000/cancel')
         
-    time.sleep(random.uniform(0.5, 2.0))
+    time.sleep(1)
