@@ -10,7 +10,7 @@ class JsonFormatter(logging.Formatter):
     def format(self, record):
         return json.dumps({
             "time": self.formatTime(record),
-            "service": "inora-backend",
+            "service_name": "inora-backend",
             "severity": record.levelname,
             "message": record.getMessage(),
             "request_id": getattr(record, "request_id", "n/a")
