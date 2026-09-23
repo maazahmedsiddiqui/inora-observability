@@ -11,3 +11,11 @@ scrape_configs:
       - targets: ['node-exporter:9100']
         labels:
           machine: 'DESKTOP-682RE3R'   
+
+  - job_name: 'cardinality_test'
+    static_configs:
+      - targets: ['host.docker.internal:8001']
+
+  - job_name: 'cardinality_test_v2'
+    static_configs:
+      - targets: ['host.docker.internal:8002']
